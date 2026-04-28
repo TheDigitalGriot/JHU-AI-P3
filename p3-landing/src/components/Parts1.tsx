@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { DATA, type ClassKey } from '../data/data'
 import { Section } from './Section'
 import { NumTween } from './NumTween'
+import { useReveal } from '../hooks/useReveal'
 
 const D = DATA
 
@@ -93,6 +94,7 @@ function ClassBalanceChart() {
 
 export function EDA() {
   const ref = useRef<HTMLElement>(null)
+  useReveal(ref)
   return (
     <section className="beat" id="04 EDA" ref={ref} data-screen-label="04 EDA">
       <div className="container">

@@ -496,7 +496,7 @@ html.js .reveal.in { opacity: 1; transform: none; }
   display: flex;
   gap: 4vw;
   margin-top: 3rem;
-  align-items: flex-start;
+  align-items: stretch;
 }
 @media (max-width: 900px) { .ch-scrolly { flex-direction: column; } }
 .ch-steps {
