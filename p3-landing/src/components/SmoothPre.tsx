@@ -6,7 +6,9 @@ import {
   getStartingSnapshot,
 } from 'codehike/utils/token-transitions'
 
-const MAX_TRANSITION_DURATION = 900 // ms
+const MAX_TRANSITION_DURATION = 1600 // ms — slower than docs default (900) so the
+// morph is visible during natural scroll. With short duration, each token's
+// animation completes between scroll keyframes and the user perceives a cut.
 
 type PreProps = React.ComponentProps<typeof Pre>
 

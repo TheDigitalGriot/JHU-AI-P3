@@ -1,16 +1,21 @@
 ## !intro From raw scan to 4-class softmax
 
-Six steps. Each one is a few lines of code, and each one is a decision that quietly determines whether the model gets to learn the right thing. The code on the right swaps as you read.
+Six steps. Each one is a few lines of code, and each one is a decision that quietly determines whether the model gets to learn the right thing. Watch the right panel — tokens slide between positions as each step builds on the last.
 
 ## !!steps 1 · Imports
 
-The minimum stack: **Keras** for the model, **scikit-learn** for the stratified split, **ImageDataGenerator** for augmentation. Everything below this line is a consequence of these three choices.
+The minimum stack: **Keras** for the model, **scikit-learn** for the stratified split, **ImageDataGenerator** for augmentation.
 
 ```python ! pipeline.py
-from tensorflow.keras.applications import VGG16
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout, Flatten
 from sklearn.model_selection import train_test_split
+from tensorflow.keras.applications  import VGG16
+from tensorflow.keras.models        import Sequential
+from tensorflow.keras.layers        import Dense, Dropout, Flatten, Lambda
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
+X_train, X_val, X_test = images, images, images
+y_train, y_val, y_test = labels, labels, labels
+model = None
 ```
 
 ## !!steps 2 · Stratified split
@@ -18,27 +23,31 @@ from sklearn.model_selection import train_test_split
 A **70 / 15 / 15** split, stratified by label so each class is proportionally represented in train, val, and test. `random_state=42` makes every comparison below reproducible.
 
 ```python ! pipeline.py
-# 70 / 15 / 15 stratified split — class balance preserved
-X_train, X_temp, y_train, y_temp = train_test_split(
-    images, labels, test_size=0.30, stratify=labels, random_state=42)
+from sklearn.model_selection import train_test_split
+from tensorflow.keras.applications  import VGG16
+from tensorflow.keras.models        import Sequential
+from tensorflow.keras.layers        import Dense, Dropout, Flatten, Lambda
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
-X_val, X_test, y_val, y_test = train_test_split(
-    X_temp, y_temp, test_size=0.50, stratify=y_temp, random_state=42)
-
-# Training set   : 2026 images (70.0%)
-# Validation set : 434 images  (15.0%)
-# Test set       : 435 images  (15.0%)
+X_train, X_temp, y_train, y_temp = train_test_split(images, labels, test_size=0.30, stratify=labels, random_state=42)
+X_val,   X_test, y_val,   y_test = train_test_split(X_temp, y_temp, test_size=0.50, stratify=y_temp, random_state=42)
+model = None
 ```
 
 ## !!steps 3 · Normalize
 
-Pixels enter as **0–255** integers; gradient descent prefers **0–1** floats. One line, three arrays — and the model can finally see uniformly-scaled inputs.
+Pixels enter as **0–255** integers; gradient descent prefers **0–1** floats. One cast per array — and the model finally sees uniformly-scaled inputs.
 
 ```python ! pipeline.py
-# Min–max scale to [0, 1] for numerical stability
-X_train_n = X_train.astype('float32') / 255.0
-X_val_n   = X_val.astype('float32')   / 255.0
-X_test_n  = X_test.astype('float32')  / 255.0
+from sklearn.model_selection import train_test_split
+from tensorflow.keras.applications  import VGG16
+from tensorflow.keras.models        import Sequential
+from tensorflow.keras.layers        import Dense, Dropout, Flatten, Lambda
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
+X_train, X_val, X_test = X_train.astype('float32') / 255.0, X_val.astype('float32') / 255.0, X_test.astype('float32') / 255.0
+y_train, y_val, y_test = to_categorical(y_train, 4), to_categorical(y_val, 4), to_categorical(y_test, 4)
+model = None
 ```
 
 ## !!steps 4 · Leakage audit
@@ -46,12 +55,17 @@ X_test_n  = X_test.astype('float32')  / 255.0
 Before any model touches the data, we ask: can a logistic regression predict the class from **only** intensity statistics? If yes, the dataset has a non-tumor signal we need to know about.
 
 ```python ! pipeline.py
-# Scanner-Fingerprint Leakage Audit
-# Can a logistic regression predict class from intensity statistics alone?
-features = [mean, std, median, skew, kurtosis]   # per-image, per-channel
-clf = LogisticRegression(class_weight='balanced').fit(X_train_stats, y_train)
-print(clf.score(X_test_stats, y_test))
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model    import LogisticRegression
+from tensorflow.keras.applications  import VGG16
+from tensorflow.keras.models        import Sequential
+from tensorflow.keras.layers        import Dense, Dropout, Flatten, Lambda
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
+features = [mean, std, median, skew, kurtosis]
+audit    = LogisticRegression(class_weight='balanced').fit(X_train_stats, y_train).score(X_test_stats, y_test)
 # 0.6575  vs  0.25 chance  →  PROBABLE leakage
+model    = None
 ```
 
 ## !!steps 5 · Build the winner
@@ -59,16 +73,19 @@ print(clf.score(X_test_stats, y_test))
 **VGG-16** frozen as a feature extractor, with a 256→128→4 feedforward head. Dropout 0.5 and 0.3 keep the head honest. This is the architecture that hits **0.9233 macro-recall**.
 
 ```python ! pipeline.py
-# VGG-16 + Feedforward head (rubric winner)
+from sklearn.model_selection import train_test_split
+from tensorflow.keras.applications  import VGG16
+from tensorflow.keras.models        import Sequential
+from tensorflow.keras.layers        import Dense, Dropout, Flatten, Lambda
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
 model = Sequential([
     Lambda(vgg16_preprocess),
-    vgg16_base,                   # frozen
+    VGG16(weights='imagenet', include_top=False),
     Flatten(),
-    Dense(256, activation='relu'),
-    Dropout(0.5),
-    Dense(128, activation='relu'),
-    Dropout(0.3),
-    Dense(4, activation='softmax')
+    Dense(256, activation='relu'), Dropout(0.5),
+    Dense(128, activation='relu'), Dropout(0.3),
+    Dense(4,   activation='softmax'),
 ])
 ```
 
@@ -77,15 +94,21 @@ model = Sequential([
 The augmentation that *didn't* help. Horizontal flip and a 5% shift/zoom — **no rotation, no shear** (those would teach the model anatomical lies). Macro-recall drops from 0.92 to 0.87.
 
 ```python ! pipeline.py
-# MRI-safe augmentation — NO rotation, NO shear (Pérez-García 2021)
-aug = ImageDataGenerator(
-    horizontal_flip=True,    # safe for axial MRI
-    width_shift_range=0.05,
-    height_shift_range=0.05,
-    zoom_range=0.05,
-    fill_mode='nearest',
-)
-# v4.0 fix: lr 5e-4 → 1e-4 ; patience 10 → 20 (aug adds gradient variance)
+from sklearn.model_selection import train_test_split
+from tensorflow.keras.applications  import VGG16
+from tensorflow.keras.models        import Sequential
+from tensorflow.keras.layers        import Dense, Dropout, Flatten, Lambda
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
+model = Sequential([
+    Lambda(vgg16_preprocess),
+    VGG16(weights='imagenet', include_top=False),
+    Flatten(),
+    Dense(256, activation='relu'), Dropout(0.5),
+    Dense(128, activation='relu'), Dropout(0.3),
+    Dense(4,   activation='softmax'),
+])
+aug = ImageDataGenerator(horizontal_flip=True, width_shift_range=0.05, height_shift_range=0.05, zoom_range=0.05)
 ```
 
 ## !outro
