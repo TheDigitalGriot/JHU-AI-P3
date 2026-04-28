@@ -454,7 +454,10 @@ export function Outro() {
       <p style={{ marginTop: '4rem', textAlign: 'center', fontFamily: 'var(--serif)', fontSize: 24, color: 'var(--dim)' }}>
         JHU · Neural Networks for Computer Vision · P3 · v4.3.0 · 2026
       </p>
-      <p style={{ marginTop: '0.6rem', textAlign: 'center', fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '0.18em', color: 'var(--dim)' }}>
+      <p style={{ marginTop: '0.6rem', textAlign: 'center', fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: 22, color: 'var(--ink)' }}>
+        By <span style={{ color: 'var(--cyan)' }}>Gavin Bennett</span>
+      </p>
+      <p style={{ marginTop: '1.4rem', textAlign: 'center', fontFamily: 'var(--mono)', fontSize: 11, letterSpacing: '0.18em', color: 'var(--dim)' }}>
         TRAINED ON <a href="https://thundercompute.com/" target="_blank" rel="noreferrer" style={{ color: 'var(--cyan)' }}>THUNDER&nbsp;COMPUTE</a> · A100-SXM4-80GB &nbsp;·&nbsp; TRACKED WITH <a href="https://wandb.ai/" target="_blank" rel="noreferrer" style={{ color: 'var(--cyan)' }}>WEIGHTS&nbsp;&amp;&nbsp;BIASES</a>
       </p>
     </Section>

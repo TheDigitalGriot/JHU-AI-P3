@@ -53,6 +53,10 @@ export function Hero() {
             <h1 className="serif">
               Reading<br />the brain<br />in <em>2,895</em><br />scans.
             </h1>
+            <div className="hero-byline">
+              <span>BY</span>
+              <em>Gavin Bennett</em>
+            </div>
           </div>
           <div className="hero-bottom">
             <div>BRAIN&nbsp;TUMOR&nbsp;CLASSIFICATION  ·  GLIOMA / MENINGIOMA / PITUITARY / NO-TUMOR</div>

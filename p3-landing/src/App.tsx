@@ -81,6 +81,7 @@ export default function App() {
         <span>JHU · NN-CV · P3 · v4.3.0 · 2026</span>
         <span>BRAIN TUMOR DETECTION · GLIOMA / MENINGIOMA / NOTUMOR / PITUITARY</span>
         <span>THUNDER COMPUTE · A100-SXM4-80GB · W&amp;B</span>
+        <span>BY GAVIN BENNETT</span>
         <span><a href="https://github.com/TheDigitalGriot/JHU-AI-P3" target="_blank" rel="noreferrer">SOURCE →</a></span>
       </footer>
     </>

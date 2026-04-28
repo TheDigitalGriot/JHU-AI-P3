@@ -164,6 +164,28 @@ section.beat:first-child { border-top: none; padding-top: 0; }
   max-width: 12ch;
 }
 .hero-title h1 em { font-style: italic; color: var(--cyan); }
+.hero-byline {
+  margin-top: 1.4rem;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  mix-blend-mode: difference;
+  color: rgba(244,246,243,0.72);
+}
+.hero-byline span {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(244,246,243,0.55);
+}
+.hero-byline em {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  color: var(--cyan);
+}
 .hero-bottom {
   display: flex;
   justify-content: space-between;
