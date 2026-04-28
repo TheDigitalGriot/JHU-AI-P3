@@ -164,25 +164,46 @@ section.beat:first-child { border-top: none; padding-top: 0; }
   max-width: 12ch;
 }
 .hero-title h1 em { font-style: italic; color: var(--cyan); }
+/* Griotwave-style glass chip, P3-tinted (haze-04 fill, cyan rim, frost blur) */
 .hero-byline {
-  margin-top: 1.4rem;
-  display: flex;
+  margin-top: 1.6rem;
+  display: inline-flex;
   align-items: baseline;
-  gap: 14px;
-  mix-blend-mode: difference;
-  color: rgba(244,246,243,0.72);
+  gap: 12px;
+  padding: 10px 18px 11px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(77, 255, 208, 0.22);
+  border-radius: 9999px;
+  backdrop-filter: blur(40px) saturate(140%);
+  -webkit-backdrop-filter: blur(40px) saturate(140%);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.08) inset,
+    0 0 0 1px rgba(77, 255, 208, 0.04) inset,
+    0 18px 48px 0 rgba(0, 0, 0, 0.45),
+    0 0 24px 0 rgba(77, 255, 208, 0.10);
+  position: relative;
+  isolation: isolate;
+  width: fit-content;
+}
+.hero-byline::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 35%);
 }
 .hero-byline span {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: rgba(244,246,243,0.55);
+  color: rgba(244, 246, 243, 0.55);
 }
 .hero-byline em {
   font-family: var(--serif);
   font-style: italic;
-  font-size: 22px;
+  font-size: 20px;
   letter-spacing: -0.01em;
   color: var(--cyan);
 }
