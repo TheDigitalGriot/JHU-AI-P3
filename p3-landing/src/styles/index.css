@@ -164,23 +164,23 @@ section.beat:first-child { border-top: none; padding-top: 0; }
   max-width: 12ch;
 }
 .hero-title h1 em { font-style: italic; color: var(--cyan); }
-/* Griotwave-style glass chip, P3-tinted (haze-04 fill, cyan rim, frost blur) */
+/* Smokey-dark glass card (Griotwave Card recipe, dark fill over variable scene) */
 .hero-byline {
   margin-top: 1.6rem;
   display: inline-flex;
   align-items: baseline;
-  gap: 12px;
-  padding: 10px 18px 11px;
-  background: rgba(255, 255, 255, 0.04);
+  gap: 14px;
+  padding: 12px 20px 13px;
+  background: rgba(8, 9, 11, 0.55);
   border: 1px solid rgba(77, 255, 208, 0.22);
   border-radius: 9999px;
   backdrop-filter: blur(40px) saturate(140%);
   -webkit-backdrop-filter: blur(40px) saturate(140%);
   box-shadow:
     0 1px 0 0 rgba(255, 255, 255, 0.08) inset,
-    0 0 0 1px rgba(77, 255, 208, 0.04) inset,
-    0 18px 48px 0 rgba(0, 0, 0, 0.45),
-    0 0 24px 0 rgba(77, 255, 208, 0.10);
+    0 0 0 1px rgba(77, 255, 208, 0.05) inset,
+    0 20px 60px 0 rgba(0, 0, 0, 0.55),
+    0 0 28px 0 rgba(77, 255, 208, 0.12);
   position: relative;
   isolation: isolate;
   width: fit-content;
@@ -547,31 +547,101 @@ html.js .reveal.in { opacity: 1; transform: none; }
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 0;
-  padding-bottom: 30vh;
+  gap: 22vh;
+  padding: 8vh 0 30vh;
 }
+/* Glass step card (HubCard recipe — haze-04 fill, rim-08 border, frost blur,
+   top-edge highlight, depth-card shadow). Cyan ember on selection. */
 .ch-step {
-  border-left: 2px solid var(--line);
-  padding: 28vh 24px 28vh 28px;
+  position: relative;
+  isolation: isolate;
   cursor: pointer;
-  transition: border-color 0.4s ease, opacity 0.4s ease;
-  opacity: 0.45;
+  padding: 28px 30px 30px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(244, 246, 243, 0.08);
+  border-radius: 22px;
+  backdrop-filter: blur(40px) saturate(140%);
+  -webkit-backdrop-filter: blur(40px) saturate(140%);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.06) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset,
+    0 20px 60px 0 rgba(0, 0, 0, 0.35);
+  opacity: 0.55;
+  transition: background 400ms cubic-bezier(.4,0,.2,1),
+              border-color 400ms cubic-bezier(.4,0,.2,1),
+              opacity 400ms cubic-bezier(.4,0,.2,1),
+              box-shadow 400ms cubic-bezier(.4,0,.2,1),
+              transform 400ms cubic-bezier(.4,0,.2,1);
 }
-.ch-step:first-child { padding-top: 6vh; }
+.ch-step::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, transparent 30%);
+  z-index: 0;
+}
+.ch-step > * { position: relative; z-index: 1; }
+.ch-step:hover {
+  opacity: 0.85;
+  border-color: rgba(77, 255, 208, 0.18);
+}
 .ch-step[data-selected='true'] {
-  border-left-color: var(--cyan);
   opacity: 1;
+  background: rgba(77, 255, 208, 0.04);
+  border-color: rgba(77, 255, 208, 0.42);
+  transform: translateY(-2px);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.10) inset,
+    0 0 0 1px rgba(77, 255, 208, 0.12) inset,
+    0 0 28px 0 rgba(77, 255, 208, 0.22),
+    0 0 64px 0 rgba(77, 255, 208, 0.10),
+    0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
-.ch-step h3 { color: var(--ink); margin-bottom: 12px; }
+.ch-step-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px 6px;
+  margin-bottom: 18px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(244, 246, 243, 0.7);
+  transition: background 400ms cubic-bezier(.4,0,.2,1),
+              border-color 400ms cubic-bezier(.4,0,.2,1),
+              color 400ms cubic-bezier(.4,0,.2,1),
+              box-shadow 400ms cubic-bezier(.4,0,.2,1);
+}
+.ch-step[data-selected='true'] .ch-step-badge {
+  background: rgba(77, 255, 208, 0.12);
+  border-color: rgba(77, 255, 208, 0.42);
+  color: var(--cyan);
+  box-shadow: 0 0 16px 0 rgba(77, 255, 208, 0.28);
+}
+.ch-step h3 {
+  color: rgba(244, 246, 243, 0.92);
+  margin-bottom: 14px;
+  font-size: 28px;
+  letter-spacing: -0.01em;
+}
 .ch-step[data-selected='true'] h3 { color: var(--cyan); }
-.ch-step-body { color: rgba(244,246,243,0.78); font-size: 15px; line-height: 1.55; }
-.ch-step-body p { margin: 0 0 0.8em; max-width: 50ch; }
+.ch-step-body { color: rgba(244,246,243,0.78); font-size: 15px; line-height: 1.6; }
+.ch-step-body p { margin: 0 0 0.8em; max-width: 52ch; }
 .ch-step-body code {
   font-family: var(--mono);
   font-size: 12px;
   background: rgba(77, 255, 208, 0.08);
   color: var(--cyan);
   padding: 2px 6px;
+  border-radius: 4px;
 }
 .ch-sticky {
   width: 50%;

@@ -32,6 +32,9 @@ export function PipelineCodehike() {
               selectOn={['click', 'scroll']}
               className="ch-step"
             >
+              <div className="ch-step-badge">
+                <span>STEP &middot; {String(i + 1).padStart(2, '0')} / {String(steps.length).padStart(2, '0')}</span>
+              </div>
               <h3 className="serif">{step.title}</h3>
               <div className="ch-step-body">{step.children}</div>
             </Selectable>
