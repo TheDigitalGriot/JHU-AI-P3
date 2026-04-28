@@ -5,6 +5,7 @@ import { Pre, type RawCode, highlight, type HighlightedCode } from 'codehike/cod
 import { Selection, Selectable, SelectionProvider } from 'codehike/utils/selection'
 import { Section } from './Section'
 import Content from '../content/pipeline.mdx'
+import { tokenTransitions } from './token-transitions'
 
 const Schema = Block.extend({
   intro: Block,
@@ -71,6 +72,7 @@ function Code({ codeblock }: { codeblock: RawCode }): ReactElement {
   return (
     <Pre
       code={highlighted}
+      handlers={[tokenTransitions]}
       className="ch-pre"
     />
   )
