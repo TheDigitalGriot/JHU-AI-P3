@@ -8,3 +8,9 @@ Thumbs.db
 .idea/
 *.swp
 *~
+
+# Node / Vite build output
+node_modules/
+dist/
+.vite/
+*.log
