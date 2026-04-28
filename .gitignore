@@ -1,0 +1,10 @@
+# OS / WSL noise
+.DS_Store
+Thumbs.db
+*:Zone.Identifier
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
