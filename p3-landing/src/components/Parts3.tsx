@@ -21,8 +21,8 @@ export function ModelANN() {
         </div>
         <div>
           <ModelScoreCard model={D.models[0]} per={D.perClass.ann as any} />
-          <p className="reveal" style={{ marginTop: '1.4rem' }}>The ANN learns global brightness statistics — exactly the signal flagged in the leakage audit. Notumor recall is <span style={{ color: D.classColors.notumor }}>0.99</span> because notumor scans are systematically brighter; glioma recall is <span style={{ color: D.classColors.glioma }}>0.73</span> because gliomas need <em>shape</em>, and shape is gone.</p>
-          <div className="callout reveal"><em>Train F1 0.98 vs val F1 0.88</em> — a 10-point overfitting gap. The model is memorizing.</div>
+          <p className="reveal" style={{ marginTop: '1.4rem' }}>The ANN learns global brightness statistics — exactly the signal flagged in the leakage audit. Notumor recall is <span style={{ color: D.classColors.notumor }}>0.98</span> because notumor scans are systematically brighter; glioma recall is <span style={{ color: D.classColors.glioma }}>0.70</span> because gliomas need <em>shape</em>, and shape is gone.</p>
+          <div className="callout reveal"><em>Train F1 1.00 vs val F1 0.88</em> — a 12-point overfitting gap. The model is memorizing.</div>
         </div>
       </div>
     </Section>
@@ -72,12 +72,12 @@ export function ModelOpt() {
     <Section id="09 Optimized ANN"
       kicker="08 · Model 2"
       title={<>Adding the regularizers.</>}
-      lede="BatchNorm to stabilize, Dropout to prevent memorization, a learning-rate schedule to slow down at the bottom of the loss bowl. The training/val gap shrinks from 10 points to 5 — but the headline number actually drops. Fixing one problem revealed another."
+      lede="BatchNorm to stabilize, Dropout to prevent memorization, a learning-rate schedule to slow down at the bottom of the loss bowl. The training/val gap stays wide (~10 points) and the headline lands flat with the simple ANN — fixing one problem revealed another."
     >
       <div className="split" style={{ marginTop: '3rem' }}>
         <div>
           <CodeBlock label="MODEL · OPTIMIZED ANN" code={SNIP.opt} />
-          <p className="reveal" style={{ marginTop: '1.4rem' }}>Meningioma recall <em style={{ color: 'var(--magenta)' }}>collapsed</em> from 0.84 to 0.69. Dropout silenced the very neurons that had learned the meningioma boundary signature. Regularization without spatial features is a blunt instrument.</p>
+          <p className="reveal" style={{ marginTop: '1.4rem' }}>Glioma recall lifts to <span style={{ color: D.classColors.glioma }}>0.76</span>, but meningioma stays flat at 0.83. Regularization without spatial features is a blunt instrument — and 5-fold CV later reveals the optimized variant is actually <em>weaker</em> than the simple ANN on average across folds.</p>
         </div>
         <ModelScoreCard model={D.models[1]} per={D.perClass.opt as any} />
       </div>
@@ -100,7 +100,7 @@ export function ModelVGG16() {
         <div>
           <ModelScoreCard model={D.models[2]} per={D.perClass.vgg16 as any} />
           <p className="reveal" style={{ marginTop: '1.4rem' }}>Only <span className="mono" style={{ color: 'var(--cyan)' }}>2,052</span> trainable parameters out of <span className="mono">14.7M</span>. Everything else stays frozen — we're just learning a 4-way decision over features that already exist.</p>
-          <div className="callout reveal"><em>Glioma recall jumps</em> 0.73 → 0.85. Spatial features matter.</div>
+          <div className="callout reveal"><em>Glioma recall lifts</em> 0.70 → 0.77 in val; the train–val gap also tightens from 12 points to 7. Spatial features matter.</div>
         </div>
       </div>
     </Section>

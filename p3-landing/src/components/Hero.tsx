@@ -47,7 +47,7 @@ export function Hero() {
           <div className="hero-mark">
             <span className="pulse" />
             <span>JHU&nbsp;·&nbsp;NEURAL&nbsp;NETWORKS&nbsp;FOR&nbsp;COMPUTER&nbsp;VISION</span>
-            <span style={{ marginLeft: 'auto' }}>P3 ·  v4.3.0  ·  2026</span>
+            <span style={{ marginLeft: 'auto' }}>P3 ·  v6.0.2  ·  2026</span>
           </div>
           <div className="hero-title">
             <h1 className="serif">
@@ -63,7 +63,7 @@ export function Hero() {
             <div className="scroll-hint">
               <span>SCROLL</span><span className="line" />
             </div>
-            <div>VGG-16 + FF  ·  0.9233 macro-recall  &nbsp;|&nbsp;  STACKED&nbsp;ENSEMBLE  ·  0.9901 test  &nbsp;|&nbsp;  THUNDER&nbsp;A100&nbsp;·&nbsp;W&amp;B</div>
+            <div>RUBRIC VGG-16 + FF  ·  0.8452 test  &nbsp;|&nbsp;  PYTORCH&nbsp;ENSEMBLE  ·  0.9700 test  &nbsp;|&nbsp;  THUNDER&nbsp;A100&nbsp;·&nbsp;W&amp;B</div>
           </div>
         </div>
         {supported === false && (

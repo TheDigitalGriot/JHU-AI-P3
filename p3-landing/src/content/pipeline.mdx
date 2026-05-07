@@ -2,6 +2,8 @@
 
 Six steps. Each one is a few lines of code, and each one is a decision that quietly determines whether the model gets to learn the right thing. Watch the right panel — tokens slide between positions as each step builds on the last.
 
+The rubric baseline ends at step 5; steps that follow (5-fold CV, OOF stacking, the PyTorch ensemble) are the deployment path.
+
 ## !!steps 1 · Imports
 
 The minimum stack: **Keras** for the model, **scikit-learn** for the stratified split, **ImageDataGenerator** for augmentation.
@@ -50,9 +52,9 @@ y_train, y_val, y_test = to_categorical(y_train, 4), to_categorical(y_val, 4), t
 model = None
 ```
 
-## !!steps 4 · Leakage audit
+## !!steps 4 · Leakage audit triad
 
-Before any model touches the data, we ask: can a logistic regression predict the class from **only** intensity statistics? If yes, the dataset has a non-tumor signal we need to know about.
+Before any model touches the data, we run three independent audits. The first asks whether a logistic regression on intensity statistics alone can recover the class. The second is a pHash near-duplicate scan over the test/train split. The third is a bilateral-symmetry view-orientation diagnostic. All three flag non-anatomical signal in the dataset.
 
 ```python ! pipeline.py
 from sklearn.model_selection import train_test_split
@@ -68,9 +70,9 @@ audit    = LogisticRegression(class_weight='balanced').fit(X_train_stats, y_trai
 model    = None
 ```
 
-## !!steps 5 · Build the winner
+## !!steps 5 · Build the rubric Final Model
 
-**VGG-16** frozen as a feature extractor, with a 256→128→4 feedforward head. Dropout 0.5 and 0.3 keep the head honest. This is the architecture that hits **0.9233 macro-recall**.
+**VGG-16** frozen as a feature extractor, with a 256→128→4 feedforward head. Dropout 0.5 and 0.3 keep the head honest. Validation macro-recall **0.8817**; test macro-recall **0.8452**. The single rubric baseline does not clear the 0.866 worst-class clinical floor — that's what the ensembles downstream are for.
 
 ```python ! pipeline.py
 from sklearn.model_selection import train_test_split
@@ -91,7 +93,7 @@ model = Sequential([
 
 ## !!steps 6 · MRI-safe augmentation
 
-The augmentation that *didn't* help. Horizontal flip and a 5% shift/zoom — **no rotation, no shear** (those would teach the model anatomical lies). Macro-recall drops from 0.92 to 0.87.
+The augmentation that *didn't* help. Horizontal flip and a 5% shift/zoom — **no rotation, no shear** (those would teach the model anatomical lies). Validation macro-recall drops to 0.8511, and 5-fold CV puts the augmented variant within one std of the un-augmented head — statistically indistinguishable.
 
 ```python ! pipeline.py
 from sklearn.model_selection import train_test_split
@@ -113,4 +115,4 @@ aug = ImageDataGenerator(horizontal_flip=True, width_shift_range=0.05, height_sh
 
 ## !outro
 
-The pipeline is the product. Six steps, each defensible, each independently auditable. The next dataset and the next clinic will reshape every number in the leaderboard above — but the steps stay the same.
+The pipeline is the product. Six rubric steps, each defensible, each independently auditable. Beyond them sit two ensemble passes — a 5-fold OOF Keras stacker (test 0.9165) and a PyTorch 4-base ensemble with BF16-AMP and per-class temperature scaling (test 0.9700). The next dataset and the next clinic will reshape every number in the leaderboard — but the steps stay the same.

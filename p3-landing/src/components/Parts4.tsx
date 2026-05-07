@@ -11,15 +11,15 @@ export function ModelVGG16FF() {
   const m = D.models.find((x) => x.id === 'vgg16ff')!
   return (
     <Section id="11 VGG16 FF"
-      kicker="10 · Model 4 · The winner"
+      kicker="10 · Model 4 · The rubric Final Model"
       title={<>Adding a head <em>that thinks.</em></>}
-      lede="Same frozen ImageNet eyes. But now we replace the lone softmax with a 256→128→4 feedforward stack — a small classifier with enough capacity to learn the relationship between VGG features and the four diagnoses. Macro-recall jumps to 0.9233."
+      lede="Same frozen ImageNet eyes. We replace the lone softmax with a 256→128→4 feedforward stack — a small classifier with enough capacity to learn the relationship between VGG features and the four diagnoses. Validation macro-recall is 0.8817; the train–val gap tightens to 4 points."
     >
       <div className="split" style={{ marginTop: '3rem' }}>
         <div>
-          <CodeBlock label="MODEL · VGG-16 + FF (WINNER)" code={SNIP.vgg16ff} />
-          <p className="reveal">The dropout layers between dense layers (0.5, 0.3) give the head room to fit without memorizing. Train F1 reaches 0.9762 while validation F1 holds at 0.9281 — a healthy <em style={{ color: 'var(--cyan)' }}>4.8-point</em> gap, less than half the gap of the simple ANN.</p>
-          <div className="callout reveal"><em>Glioma recall:</em> 0.9175 — clears the 0.88 clinical floor with margin.</div>
+          <CodeBlock label="MODEL · VGG-16 + FF (RUBRIC FINAL MODEL)" code={SNIP.vgg16ff} />
+          <p className="reveal">The dropout layers between dense layers (0.5, 0.3) give the head room to fit without memorizing. Train F1 reaches 0.9312 while validation F1 holds at 0.8904 — a healthy <em style={{ color: 'var(--cyan)' }}>4-point</em> gap, less than half the gap of the simple ANN.</p>
+          <div className="callout reveal"><em>The rubric winner is faithful to the rubric, but not yet deployable.</em> Test glioma recall is 0.6804 — below the 0.866 clinical floor. The deployment recommendation lives downstream in the PyTorch ensemble.</div>
         </div>
         <div>
           <ModelScoreCard model={m} per={D.perClass.vgg16ff as any} highlight />
@@ -35,13 +35,13 @@ export function ModelVGG16Aug() {
     <Section id="12 VGG16 Aug"
       kicker="11 · Model 5 · MRI-safe augmentation"
       title={<>The augmentation that <em>didn't help.</em></>}
-      lede="A fashionable move — flip horizontally, shift slightly, zoom slightly. No rotation, no shear (those would invert anatomical structures and teach the model lies). The training/val gap shrinks to 2.5 points. Macro-recall drops to 0.8734."
+      lede="A fashionable move — flip horizontally, shift slightly, zoom slightly. No rotation, no shear (those would invert anatomical structures and teach the model lies). The training/val gap shrinks to 3 points; validation macro-recall actually drops to 0.8511."
     >
       <div className="split" style={{ marginTop: '3rem' }}>
         <div>
           <CodeBlock label="MODEL · VGG-16 + FF + AUG" code={SNIP.vgg16aug} />
           <p className="reveal">Augmentation works when the dataset is small enough that the model is bottlenecked on examples, not on signal. Our bottleneck is signal — the same 2,026 training images, refracted through more views, still teach the same lessons.</p>
-          <div className="callout reveal"><em>Glioma recall collapses</em> from 0.92 to 0.70. Spatial perturbations of an already-blurry boundary hurt the class that depends most on its boundary.</div>
+          <div className="callout reveal"><em>Meningioma recall drops</em> from 0.85 to 0.73. Spatial perturbations of an already-blurry boundary hurt the class that depends most on its boundary — and 5-fold CV puts this variant within one std of the un-augmented head, indistinguishable on average.</div>
         </div>
         <ModelScoreCard model={m} per={D.perClass.vgg16aug as any} />
       </div>
@@ -59,7 +59,7 @@ export function Leaderboard() {
     <Section id="13 Leaderboard"
       kicker="12 · Comparing the five"
       title={<>The leaderboard.</>}
-      lede="Five models, ranked by validation macro-recall — the metric that weights a missed glioma the same as a missed pituitary. Click a column header to re-rank. Hover a row to see how that model's per-class recall pattern shifts the dot map below."
+      lede="Five models, ranked by validation macro-recall — the metric that weights a missed glioma the same as a missed pituitary. The four backbones are within one standard deviation of each other on 5-fold CV; the single-split ranking is partly split-luck. Click a column header to re-rank. Hover a row to see how that model's per-class recall pattern shifts the dot map below."
     >
       <div className="chart reveal" style={{ marginTop: '3rem' }}>
         <div className="title">
@@ -107,7 +107,7 @@ export function Leaderboard() {
       <DotMap hover={hover} />
 
       <p className="reveal" style={{ marginTop: '2.4rem' }}>
-        Two of these clear both gates simultaneously: <strong style={{ color: 'var(--cyan)' }}>VGG-16 + FF</strong> and <strong>VGG-16 Base</strong>. The first wins by margin and is selected as the production model. The augmentation variant — typically a robustness win — actively hurts here.
+        <strong style={{ color: 'var(--cyan)' }}>VGG-16 + FF</strong> wins on validation macro-recall by a hair — and is selected as the rubric Final Model — but <em>none</em> of the five baselines clear the 0.866 worst-class floor on this single split. The deployable answer lives in the ensembles below: a 5-fold OOF Keras stacker built from these same five bases, and a PyTorch 4-base ensemble trained from scratch.
       </p>
     </Section>
   )
@@ -192,12 +192,12 @@ export function ConfusionMatrix() {
     <Section id="14 Confusion"
       kicker="13 · Reading the errors"
       title={<>Confusion <em>is structured.</em></>}
-      lede="The winning model's mistakes aren't random. Glioma slides into meningioma far more than into pituitary or notumor — exactly the visual confusion radiologists describe. The slider below sets the softmax threshold τ: higher τ means the model only commits when it's confident."
+      lede="The rubric winner's mistakes aren't random. Glioma slides into meningioma far more than into pituitary or notumor — exactly the visual confusion radiologists describe, and exactly the same pair the deep-ensemble mutual-information signal flags as least confident. The slider below sets the softmax threshold τ: higher τ means the model only commits when it's confident, and the abstained cases route to senior radiologist review."
     >
       <div className="split" style={{ marginTop: '3rem', alignItems: 'start' }}>
         <div>
           <div className="chart reveal">
-            <div className="title"><span>CONFUSION · VGG-16 + FF · VAL</span><span>τ = {tau.toFixed(2)}</span></div>
+            <div className="title"><span>CONFUSION · VGG-16 + FF · TEST</span><span>τ = {tau.toFixed(2)}</span></div>
             <table style={{ borderCollapse: 'separate', borderSpacing: 0, width: '100%', fontFamily: 'var(--mono)', fontSize: 13 }}>
               <thead>
                 <tr>
@@ -253,7 +253,7 @@ export function ConfusionMatrix() {
         </div>
         <div>
           <div className="chart reveal">
-            <div className="title"><span>LIVE METRICS · @ τ = {tau.toFixed(2)}</span><span>n = 434</span></div>
+            <div className="title"><span>LIVE METRICS · @ τ = {tau.toFixed(2)}</span><span>TEST n = 435</span></div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginTop: 8 }}>
               <div>
                 <div className="kicker">MACRO RECALL</div>
@@ -278,7 +278,7 @@ export function ConfusionMatrix() {
             </div>
           </div>
           <p className="reveal" style={{ marginTop: '1.6rem' }}>
-            At τ = 0.5 (default), macro-recall is 0.92. Sliding τ up trades coverage for confidence — the model abstains on borderline cases, which in deployment becomes a queue for radiologist review. The right τ is a clinical decision, not a statistical one.
+            At τ = 0.50 the rubric model retains 97% of cases at macro-recall 0.85. At τ = 0.85 it retains 66% at macro-recall 0.96 — the abstained 34% routes to senior review. The right τ is a clinical decision, not a statistical one.
           </p>
         </div>
       </div>
@@ -309,7 +309,7 @@ export function BayesRisk() {
     <Section id="15 Bayes Risk"
       kicker="14 · Tunable to the clinic"
       title={<>Not all errors <em>cost the same.</em></>}
-      lede="A missed glioma is treatment-critical. A false alarm on a healthy scan is a follow-up appointment. Bayes-risk decision theory lets a radiologist set the cost of each error type and computes the operating point that minimizes expected harm. Drag the cells in the cost matrix below."
+      lede="A missed glioma is treatment-critical. A false alarm on a healthy scan is a follow-up appointment. Bayes-risk decision theory lets a radiologist set the cost of each error type and computes the operating point that minimizes expected harm. The default cost matrix is WHO-grade-informed: missing a glioma costs 4×, false notumor costs 3×. Drag the cells below."
     >
       <div className="eq reveal" style={{ marginTop: '2.4rem' }}>
         <span style={{ color: 'var(--dim)' }}>R(τ) = </span>
@@ -375,7 +375,7 @@ export function BayesRisk() {
             </div>
           </div>
           <p className="reveal" style={{ marginTop: '1.6rem' }}>
-            Drag the meningioma→glioma cost up: total risk barely moves, because the model rarely makes that confusion. Drag the glioma→notumor cost up (the missed diagnosis): risk explodes, because the model still misses one in twelve gliomas. The cost matrix is how clinical priority enters the math.
+            Drag the glioma→meningioma cost up (the dominant test-set confusion pair): total risk explodes, because the model still misses one in three gliomas on the rubric Final Model. Drag the glioma→notumor cost up (the silent miss): risk explodes again, even though that confusion is rare — because the consequence is a treated tumor going untreated. The cost matrix is how clinical priority enters the math.
           </p>
         </div>
       </div>
@@ -387,27 +387,27 @@ export function Insights() {
   const items: { kicker: string; title: ReactNode; body: ReactNode; stat: string; label: string }[] = [
     {
       kicker: 'Recommendation 1',
-      title: <>Deploy <em>VGG-16 + FF</em> as a triage assist, not an autonomous reader.</>,
-      body: <>Macro-recall 0.923 with 92% glioma recall clears clinical floors. But 8% of gliomas are still missed — the model belongs in a workflow where every "no tumor" prediction is reviewed by a radiologist, especially under a strict τ.</>,
-      stat: '0.923', label: 'VAL MACRO-RECALL',
+      title: <>Deploy the <em>PyTorch 4-base ensemble</em>, not the rubric Final Model.</>,
+      body: <>The rubric VGG-16 + FF posts 0.6804 test glioma recall — below the 0.866 clinical floor. The PyTorch ensemble (ConvNeXt + EfficientNetV2 + DenseNet + Swin-V2, 5-fold OOF, BF16-AMP, per-class T) hits 0.9700 macro / 0.9381 glioma. It is the only configuration in the study that clears every per-class floor on the held-out test set.</>,
+      stat: '0.9700', label: 'PYTORCH ENSEMBLE · TEST',
     },
     {
       kicker: 'Recommendation 2',
       title: <>Acquire scans from <em>at least three independent sites.</em></>,
-      body: <>The 65.8% leakage audit means a fraction of current accuracy is recognizing scanner identity. Pooling data across sites, then de-correlating intensity statistics from class, is the only credible path to clinical generalization.</>,
-      stat: '65.8%', label: 'INTENSITY-ONLY ACCURACY',
+      body: <>Three independent leakage signals are large and complementary: 65.8% intensity-fingerprint accuracy, 69.8% pHash near-duplicate rate on notumor, and an +8.2 pp meningioma recall swing tied to view orientation. None of them are fixed by a bigger model — only by a multi-site, per-volume external validation.</>,
+      stat: '3', label: 'AUDITS · ALL FAILING',
     },
     {
       kicker: 'Recommendation 3',
-      title: <>Adopt a <em>cost-aware operating point</em> per institution.</>,
-      body: <>The Bayes-risk framework lets the radiology lead set τ and the cost matrix to match local priors. A high-volume neuro-oncology center will weight glioma recall higher; a community hospital may prioritize notumor specificity.</>,
-      stat: 'τ', label: 'CLINIC-TUNABLE',
+      title: <>Layer the <em>reject option, Bayes-risk, and MI threshold</em> as deployment knobs.</>,
+      body: <>The system is more than a classifier. At τ = 0.85 the rubric model retains 66% of cases at macro-precision 0.96; the abstained 34% routes to senior review. Bayes-risk under a clinician-editable cost matrix and ensemble mutual-information are orthogonal abstention signals — stack them for strictly better deployment.</>,
+      stat: 'τ · L · MI', label: 'CLINIC-TUNABLE',
     },
     {
       kicker: 'Recommendation 4',
       title: <>Plan the <em>next dataset</em> before iterating the model.</>,
-      body: <>VGG-16 + FF + Aug, ConvNeXt and EfficientNet all bump test recall by another point or two. None fix the leakage. The marginal return on bigger models is small; the marginal return on cleaner data is enormous.</>,
-      stat: 'Δ +0.07', label: 'CLEAN-DATA UPSIDE',
+      body: <>ConvNeXt + Swin + DenseNet + EfficientNet is already at the deployable ceiling for this corpus. The marginal return on bigger backbones is small; the marginal return on cleaner data — multi-site, per-volume splits, expert annotation for HiResCAM IoU — is enormous.</>,
+      stat: 'Δ data &gt; Δ model', label: 'WHERE THE NEXT WIN LIVES',
     },
   ]
   return (
@@ -440,19 +440,19 @@ export function Outro() {
   return (
     <Section id="17 Outro"
       kicker="16 · End"
-      title={<>2,895 scans. <em>One model.</em> A signal worth tuning.</>}
-      lede="The model is not the product. The pipeline — audit, train, compare, calibrate, recommend — is the product. The next dataset, and the next clinic, will reshape every number above. That's the point."
+      title={<>2,895 scans. <em>Three audits.</em> One deployable model.</>}
+      lede="The model is not the product. The pipeline — audit, train, compare, calibrate, abstain, recommend — is the product. The single rubric baseline does not clear the floor; the PyTorch ensemble does. The next dataset, and the next clinic, will reshape every number above. That's the point."
     >
       <div className="outro-grid">
         <Stat n="2,895" l="MRI SCANS" />
-        <Stat n="4" l="DIAGNOSTIC CLASSES" />
-        <Stat n="5" l="MODELS COMPARED" />
-        <Stat n="0.9233" l="MACRO-RECALL · VAL" hl />
-        <Stat n="0.9175" l="GLIOMA RECALL · VAL" />
-        <Stat n="0.9901" l="STACKED ENSEMBLE · TEST" />
+        <Stat n="3" l="LEAKAGE AUDITS · ALL FAILING" />
+        <Stat n="9" l="KERAS BASES + PYTORCH BACKBONES" />
+        <Stat n="0.8452" l="RUBRIC VGG-16 + FF · TEST" />
+        <Stat n="0.9165" l="KERAS 5-FOLD OOF STACKER · TEST" />
+        <Stat n="0.9700" l="PYTORCH ENSEMBLE · TEST" hl />
       </div>
       <p style={{ marginTop: '4rem', textAlign: 'center', fontFamily: 'var(--serif)', fontSize: 24, color: 'var(--dim)' }}>
-        JHU · Neural Networks for Computer Vision · P3 · v4.3.0 · 2026
+        JHU · Neural Networks for Computer Vision · P3 · v6.0.2 · 2026
       </p>
       <p style={{ marginTop: '0.6rem', textAlign: 'center', fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: 22, color: 'var(--ink)' }}>
         By <span style={{ color: 'var(--cyan)' }}>Gavin Bennett</span>

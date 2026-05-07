@@ -112,7 +112,7 @@ export function Leakage() {
     <Section id="07 Leakage Audit"
       kicker="06 · The audit"
       title={<>Can you predict the class <em>without</em> looking at the tumor?</>}
-      lede="A logistic regression sees only five numbers per image — mean, std, median, skew, kurtosis. No spatial information. No tumor shape. If it guesses better than chance, the dataset is leaking scanner identity through brightness."
+      lede="Three independent audits run before any model is trusted. The first asks whether a logistic regression on five intensity statistics — no spatial info — can recover the class. Two more audits follow: pHash near-duplicate slice leakage (69.8% of notumor test images have a near-duplicate in train) and bilateral-symmetry view-orientation (an +8.2 pp meningioma recall swing tied to sagittal-vs-axial protocol)."
     >
       <div ref={ref}>
         <div className="eq reveal" style={{ marginTop: '2.4rem' }}>
@@ -133,7 +133,7 @@ export function Leakage() {
             </div>
             <p style={{ marginTop: '1.2rem' }}>Test accuracy on a held-out 15% of images, with no spatial information. Random guessing would give <strong style={{ color: 'var(--dim)' }}>25.00%</strong>.</p>
             <p>The model that knows nothing about tumors still gets <strong style={{ color: 'var(--magenta)' }}>2.6× better than chance</strong>. That's the scanner fingerprint, baked into the dataset.</p>
-            <div className="callout"><em>Probable leakage.</em> Some fraction of any model's recall on this corpus is the model recognizing where the image came from — not what's inside it.</div>
+            <div className="callout"><em>Probable leakage.</em> Some fraction of any model's recall on this corpus is the model recognizing where the image came from — not what's inside it. The pHash audit (69.8% notumor near-duplicates) and the view-orientation audit (meningioma → sagittal, +8.2 pp) confirm the same story from two more angles.</div>
           </div>
           <LeakageMeter pct={D.leakage.testAcc} animated={animated} />
         </div>

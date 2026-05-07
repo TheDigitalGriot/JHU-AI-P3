@@ -78,7 +78,7 @@ export default function App() {
       </main>
 
       <footer>
-        <span>JHU · NN-CV · P3 · v4.3.0 · 2026</span>
+        <span>JHU · NN-CV · P3 · v6.0.2 · 2026</span>
         <span>BRAIN TUMOR DETECTION · GLIOMA / MENINGIOMA / NOTUMOR / PITUITARY</span>
         <span>THUNDER COMPUTE · A100-SXM4-80GB · W&amp;B</span>
         <span>BY GAVIN BENNETT</span>
