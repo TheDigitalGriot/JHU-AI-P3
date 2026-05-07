@@ -1,0 +1,35 @@
+index	filename	source_cell	label_source	label
+01	01_number_of_mri_images_per_class.png	28	set_title	Number of MRI Images per Class
+02	02_random_sample_mri_images_per_class.png	31	suptitle	Random Sample MRI Images per Class
+03	03_image_width_distribution_by_class.png	37	set_title	Image Width Distribution by Class
+04	04_image_width_vs_height_by_class.png	37	set_title	Image Width vs Height by Class
+05	05_distribution_of_mean_pixel_intensity_by_class.png	40	set_title	Distribution of Mean Pixel Intensity by Class
+06	06_per_channel_pixel_intensity_density_by_class.png	43	suptitle	Per-Channel Pixel Intensity Density by Class
+07	07_native_aspect_ratio_w_h_by_class.png	62	set_title	Native Aspect Ratio (W/H) by Class
+08	08_test_vs_train_phash_distance_distribution.png	65	set_title	Test-vs-Train pHash Distance Distribution
+09	09_t_sne_of_vgg_16_frozen_features_class_separability_in_pretra.png	68	set_title	t-SNE of VGG-16 Frozen Features — Class Separability in Pretrained Feature Space
+10	10_simple_ann_sample_predictions.png	86	suptitle	Simple ANN - Sample Predictions
+11	11_simple_ann_loss_curve.png	88	set_title	Simple ANN - Loss Curve
+12	12_simple_ann_validation_confusion_matrix.png	88	set_title	Simple ANN - Validation Confusion Matrix
+13	13_optimized_ann_sample_predictions.png	100	suptitle	Optimized ANN - Sample Predictions
+14	14_optimized_ann_loss_curve.png	102	set_title	Optimized ANN - Loss Curve
+15	15_optimized_ann_validation_confusion_matrix.png	102	set_title	Optimized ANN - Validation Confusion Matrix
+16	16_vgg_16_base_sample_predictions.png	115	suptitle	VGG-16 Base - Sample Predictions
+17	17_vgg_16_base_loss_curve.png	117	set_title	VGG-16 Base - Loss Curve
+18	18_vgg_16_base_validation_confusion_matrix.png	117	set_title	VGG-16 Base - Validation Confusion Matrix
+19	19_vgg_16_ff_sample_predictions.png	129	suptitle	VGG-16 + FF - Sample Predictions
+20	20_vgg_16_ff_loss_curve.png	131	set_title	VGG-16 + FF - Loss Curve
+21	21_vgg_16_ff_validation_confusion_matrix.png	131	set_title	VGG-16 + FF - Validation Confusion Matrix
+22	22_vgg_16_ff_aug_sample_predictions.png	143	suptitle	VGG-16 + FF + Aug - Sample Predictions
+23	23_vgg_16_ff_aug_loss_curve.png	145	set_title	VGG-16 + FF + Aug - Loss Curve
+24	24_vgg_16_ff_aug_validation_confusion_matrix.png	145	set_title	VGG-16 + FF + Aug - Validation Confusion Matrix
+25	25_validation_performance_macro_recall_primary_worst_class_floo.png	149	set_title	Validation Performance — Macro-Recall Primary, Worst-Class Floor
+26	26_test_set_confusion_matrix.png	168	set_title	{best_model_name} - Test Set Confusion Matrix
+27	27_test_set_sample_predictions.png	168	suptitle	{best_model_name} - Test Set Sample Predictions
+28	28_keras_winner_reliability_diagrams_before_vs_after_temperatur.png	170	suptitle	Keras Winner Reliability Diagrams — Before vs After Temperature Scaling
+29	29_bilateral_symmetry_score_by_class_proxy_for_view_orientation.png	176	set_title	Bilateral-Symmetry Score by Class (proxy for view orientation)
+30	30_vgg_16_ff_apples_to_apples_bird.png	184	set_title	VGG-16+FF — Apples-to-Apples Bird\
+31	31_reject_option_frontier_macro_r_p_vs_coverage.png	187	set_title	Reject-Option Frontier — Macro R/P vs Coverage
+32	32_bayes_risk_pareto_frontier_recall_vs_expected_cost.png	190	set_title	Bayes-Risk Pareto Frontier — Recall vs Expected Cost
+33	33_deep_ensemble_mutual_information_epistemic_uncertainty_by_cl.png	193	set_title	Deep Ensemble Mutual Information (epistemic uncertainty) by Class
+34	34_attribution_gallery_vgg_16_ff_rubric_winner.png	196	suptitle	Attribution Gallery — VGG-16+FF (rubric winner)
